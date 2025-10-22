@@ -96,9 +96,10 @@ export default function Chart({ title, type, data, labels }: ChartProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) =>
-                  `${name}: ${(percent * 100).toFixed(0)}%`
-                }
+                label={(props: any) => {
+                  const percent = props.percent || 0;
+                  return `${props.name}: ${(percent * 100).toFixed(0)}%`;
+                }}
                 outerRadius={100}
                 innerRadius={type === "doughnut" ? 60 : 0}
                 fill="#8884d8"
