@@ -160,24 +160,41 @@ export default function Page() {
 }
 ```
 
-## 🔌 Conexión con API Backend
+## 🔌 API Integrada
 
-Para conectar con la API de Railway:
+Este proyecto incluye API routes integradas para crear widgets dinámicamente:
 
-```typescript
-// Ejemplo de llamada a la API
-const response = await fetch('https://gpt-widget-production.up.railway.app/api/widget/dashboard', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    title: "Mi Dashboard",
-    metrics: [...]
-  })
-});
+### GET /api/widgets
+Obtiene todos los widgets disponibles o uno específico:
 
-const data = await response.json();
-// data.content contiene el markdown generado
+```bash
+# Obtener todos los widgets
+curl https://frontend-production-d329.up.railway.app/api/widgets
+
+# Obtener un widget específico
+curl https://frontend-production-d329.up.railway.app/api/widgets?type=dashboard
 ```
+
+### POST /api/widgets
+Crea un widget personalizado:
+
+```bash
+curl -X POST https://frontend-production-d329.up.railway.app/api/widgets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "chart",
+    "title": "Ventas Mensuales",
+    "chartType": "bar",
+    "data": [15000, 22000, 18000, 28000],
+    "labels": ["Ene", "Feb", "Mar", "Abr"]
+  }'
+```
+
+### Página de Widget Dinámica
+
+Visualiza widgets en: `https://frontend-production-d329.up.railway.app/widget?type={tipo}`
+
+Tipos disponibles: `dashboard`, `chart`, `table`, `timeline`, `comparison`
 
 ## 🚀 Deploy
 
@@ -202,13 +219,23 @@ railway link
 railway up
 ```
 
-## 🤝 Integración con ChatGPT
+## 🤝 Integración con ChatGPT Actions
 
-Este frontend está diseñado para trabajar con el backend API que tu GPT de ChatGPT puede llamar:
+Este proyecto está listo para integrarse con ChatGPT Actions:
 
-1. **GPT llama a la API** → Genera datos en formato markdown
-2. **Frontend consume la API** → Genera widgets visuales hermosos
-3. **Usuario ve los resultados** → Visualización moderna y profesional
+1. **Importa el esquema OpenAPI**: `https://frontend-production-d329.up.railway.app/openapi.json`
+2. **Configura GPT Actions** con los endpoints `/api/widgets`
+3. **Usa en ChatGPT**: Pide "muestra un gráfico de ventas mensuales"
+4. **GPT crea el widget** y te da el URL para verlo
+
+Ver [GPT_ACTIONS_SETUP.md](./GPT_ACTIONS_SETUP.md) para instrucciones detalladas.
+
+### Flujo de Trabajo
+
+1. **Usuario pregunta** → "Muéstrame las ventas de este mes"
+2. **GPT llama API** → POST /api/widgets con los datos
+3. **API responde** → URL del widget generado
+4. **Usuario ve** → Widget interactivo y visual
 
 ## 📝 Notas
 
@@ -217,12 +244,14 @@ Este frontend está diseñado para trabajar con el backend API que tu GPT de Cha
 - Las animaciones están optimizadas para rendimiento
 - El diseño es completamente responsive
 
-## 🎯 Próximos Pasos
+## 🎯 Estado del Proyecto
 
 1. ✅ Frontend funcionando localmente
-2. ⏳ Conectar con API de Railway dinámicamente
-3. ⏳ Deploy a Vercel/Railway
-4. ⏳ Agregar más tipos de widgets
+2. ✅ API integrada con endpoints /api/widgets
+3. ✅ Deploy en Railway
+4. ✅ OpenAPI schema para GPT Actions
+5. ✅ Página dinámica de widgets
+6. ✅ 5 tipos de widgets implementados
 
 ## 🔗 Enlaces Útiles
 

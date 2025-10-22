@@ -1,0 +1,245 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ChatGPT Dynamic Widgets API",
+    "description": "API for creating and displaying dynamic widgets in ChatGPT conversations",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://frontend-production-d329.up.railway.app"
+    }
+  ],
+  "paths": {
+    "/api/widgets": {
+      "get": {
+        "operationId": "getWidgets",
+        "summary": "Get all available widgets or a specific widget",
+        "description": "Returns a list of all available widget types or a specific widget if type is provided",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The type of widget to retrieve (dashboard, chart, table, timeline, comparison)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["dashboard", "chart", "table", "timeline", "comparison"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "widgets": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "widget": {
+                      "type": "object"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWidget",
+        "summary": "Create a custom widget",
+        "description": "Creates a custom widget with the specified type and data. Returns a URL to view the widget.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["dashboard", "chart", "table", "timeline", "comparison"],
+                    "description": "The type of widget to create"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "The title of the widget"
+                  },
+                  "data": {
+                    "type": "array",
+                    "description": "Data for chart widgets",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "labels": {
+                    "type": "array",
+                    "description": "Labels for chart widgets",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "chartType": {
+                    "type": "string",
+                    "enum": ["bar", "line", "pie", "doughnut"],
+                    "description": "Type of chart (for chart widgets)"
+                  },
+                  "metrics": {
+                    "type": "array",
+                    "description": "Metrics for dashboard widgets",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string"
+                        },
+                        "change": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "headers": {
+                    "type": "array",
+                    "description": "Column headers for table widgets",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "rows": {
+                    "type": "array",
+                    "description": "Row data for table widgets",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "events": {
+                    "type": "array",
+                    "description": "Events for timeline widgets",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "color": {
+                          "type": "string",
+                          "enum": ["blue", "green", "purple", "orange", "red"]
+                        }
+                      }
+                    }
+                  },
+                  "items": {
+                    "type": "array",
+                    "description": "Items for comparison widgets",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        },
+                        "features": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "highlight": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "chart": {
+                  "value": {
+                    "type": "chart",
+                    "title": "Monthly Sales",
+                    "chartType": "bar",
+                    "data": [15000, 22000, 18000, 28000],
+                    "labels": ["Jan", "Feb", "Mar", "Apr"]
+                  }
+                },
+                "dashboard": {
+                  "value": {
+                    "type": "dashboard",
+                    "title": "Sales Dashboard",
+                    "metrics": [
+                      {
+                        "value": "$125,430",
+                        "label": "Total Revenue",
+                        "color": "text-green-600",
+                        "change": "+18%"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Widget created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "widget": {
+                      "type": "object"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL to view the widget"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        }
+      }
+    }
+  }
+}
