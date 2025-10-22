@@ -52,6 +52,29 @@ function NextChatSDKBootstrap({ baseUrl }: { baseUrl: string }) {
           const baseUrl = window.innerBaseUrl;
           const htmlElement = document.documentElement;
 
+          // Fix relative font URLs in CSS for iframe compatibility
+          document.addEventListener('DOMContentLoaded', function() {
+            const styleSheets = Array.from(document.styleSheets);
+            styleSheets.forEach(sheet => {
+              try {
+                if (sheet.href && sheet.href.includes('_next/static')) {
+                  const rules = Array.from(sheet.cssRules || []);
+                  rules.forEach(rule => {
+                    if (rule.cssText && rule.cssText.includes('url(../media/')) {
+                      // Create a new style element with fixed URLs
+                      const fixedCSS = rule.cssText.replace(/url\(\.\.\//g, 'url(' + baseUrl + '/_next/static/');
+                      const style = document.createElement('style');
+                      style.textContent = fixedCSS;
+                      document.head.appendChild(style);
+                    }
+                  });
+                }
+              } catch (e) {
+                // CORS or other restriction, skip
+              }
+            });
+          });
+
           // Prevent ChatGPT from modifying HTML attributes
           const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
