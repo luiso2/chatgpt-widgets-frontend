@@ -16,7 +16,7 @@
       "post": {
         "operationId": "createWidget",
         "summary": "Create a visual widget",
-        "description": "Creates an interactive visual widget (chart, dashboard, table, etc.) and returns a URL to the rendered HTML visualization. ChatGPT will display this as an inline iframe with the actual rendered chart/widget, not as text. Supports: dashboard (KPI metrics), chart (bar/line/pie/doughnut charts with Recharts), table (data rows), timeline (events), comparison (pricing/features).",
+        "description": "Creates interactive visual widgets (chart, dashboard, table, timeline, comparison) and returns a widgetUrl for iframe rendering. ChatGPT displays this as an inline visualization with Recharts, not text. Supports bar/line/pie/doughnut charts, KPI dashboards, and data tables.",
         "requestBody": {
           "required": true,
           "content": {
