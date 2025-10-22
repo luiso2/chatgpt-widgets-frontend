@@ -2,10 +2,32 @@
 
 import { useWidgetProps, useMaxHeight, useDisplayMode, useIsChatGptApp } from "@/app/hooks";
 import Table from "@/components/widgets/Table";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const dynamic = 'force-dynamic';
 
 export default function TableWidget() {
+  const searchParams = useSearchParams();
+  const widgetId = searchParams.get("id");
+
+  const [urlData, setUrlData] = useState<any>(null);
+
+  // Fetch data from URL params if id is present
+  useEffect(() => {
+    if (widgetId) {
+      fetch(`/api/widgets?id=${widgetId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.widget) {
+            setUrlData(data.widget);
+          }
+        })
+        .catch(err => console.error("Error fetching widget data:", err));
+    }
+  }, [widgetId]);
+
+  // Try MCP data first (for inline rendering)
   const toolOutput = useWidgetProps<{
     result?: { structuredContent?: {
       title?: string;
@@ -18,7 +40,8 @@ export default function TableWidget() {
   const displayMode = useDisplayMode();
   const isChatGptApp = useIsChatGptApp();
 
-  const data = toolOutput?.result?.structuredContent;
+  // Use MCP data if available, otherwise use URL data
+  const data = toolOutput?.result?.structuredContent || urlData;
 
   if (!data || !data.title || !data.headers || !data.rows) {
     return (
