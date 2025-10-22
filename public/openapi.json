@@ -98,19 +98,24 @@
                       "type": "object",
                       "properties": {
                         "date": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Event date"
                         },
                         "title": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Event title"
                         },
                         "description": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Event description"
                         },
                         "color": {
                           "type": "string",
-                          "enum": ["blue", "green", "purple", "orange", "red"]
+                          "enum": ["blue", "green", "purple", "orange", "red"],
+                          "description": "Event color badge"
                         }
-                      }
+                      },
+                      "required": ["date", "title", "description", "color"]
                     }
                   },
                   "items": {
@@ -120,21 +125,26 @@
                       "type": "object",
                       "properties": {
                         "name": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Item name (e.g., plan name)"
                         },
                         "price": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Item price"
                         },
                         "features": {
                           "type": "array",
+                          "description": "List of features",
                           "items": {
                             "type": "string"
                           }
                         },
                         "highlight": {
-                          "type": "boolean"
+                          "type": "boolean",
+                          "description": "Whether to highlight this item"
                         }
-                      }
+                      },
+                      "required": ["name", "price", "features", "highlight"]
                     }
                   }
                 }
@@ -191,6 +201,60 @@
                       ["iPhone 15", "$89,450", "125"],
                       ["MacBook Air", "$145,320", "45"],
                       ["AirPods Pro", "$34,890", "234"]
+                    ]
+                  }
+                },
+                "timeline": {
+                  "summary": "Timeline Example",
+                  "value": {
+                    "type": "timeline",
+                    "title": "Project Milestones",
+                    "events": [
+                      {
+                        "date": "Jan 2025",
+                        "title": "Project Kickoff",
+                        "description": "Initial planning and team formation",
+                        "color": "blue"
+                      },
+                      {
+                        "date": "Feb 2025",
+                        "title": "Design Phase",
+                        "description": "UI/UX design and prototyping",
+                        "color": "purple"
+                      },
+                      {
+                        "date": "Mar 2025",
+                        "title": "Development Started",
+                        "description": "Backend and frontend implementation",
+                        "color": "green"
+                      }
+                    ]
+                  }
+                },
+                "comparison": {
+                  "summary": "Comparison Example",
+                  "value": {
+                    "type": "comparison",
+                    "title": "Pricing Plans",
+                    "items": [
+                      {
+                        "name": "Basic",
+                        "price": "$9/month",
+                        "features": ["5 users", "10GB storage", "Email support"],
+                        "highlight": false
+                      },
+                      {
+                        "name": "Pro",
+                        "price": "$29/month",
+                        "features": ["25 users", "100GB storage", "Priority support", "Advanced analytics"],
+                        "highlight": true
+                      },
+                      {
+                        "name": "Enterprise",
+                        "price": "$99/month",
+                        "features": ["Unlimited users", "1TB storage", "24/7 phone support", "Custom integrations"],
+                        "highlight": false
+                      }
                     ]
                   }
                 }
