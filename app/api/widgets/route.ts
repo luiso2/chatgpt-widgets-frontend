@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { type, ...widgetData } = body;
+    const { type, chartType, ...widgetData } = body;
 
     // Validate widget type
     if (!type) {
@@ -53,12 +53,17 @@ export async function POST(request: Request) {
     // Call backend API
     const backendUrl = `${BACKEND_API_URL}${WIDGET_ENDPOINTS[type]}`;
 
+    // For chart widgets, map chartType to type for backend
+    const backendPayload = type === "chart" && chartType
+      ? { ...widgetData, type: chartType }
+      : widgetData;
+
     const backendResponse = await fetch(backendUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(widgetData),
+      body: JSON.stringify(backendPayload),
     });
 
     if (!backendResponse.ok) {

@@ -2,67 +2,21 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ChatGPT Dynamic Widgets API",
-    "description": "API for creating and displaying dynamic widgets directly in ChatGPT conversations. All widgets are returned as formatted markdown for immediate display in the chat.",
-    "version": "2.0.0"
+    "description": "API for creating dynamic widgets that display as formatted markdown in ChatGPT. Simply POST to /api/widgets with your widget type and data, and receive formatted content ready to display.",
+    "version": "3.0.0"
   },
   "servers": [
     {
       "url": "https://frontend-production-d329.up.railway.app",
-      "description": "Production server on Railway"
+      "description": "Production Frontend (proxies to backend automatically)"
     }
   ],
   "paths": {
     "/api/widgets": {
-      "get": {
-        "operationId": "getWidgets",
-        "summary": "Get all available widgets or a specific widget",
-        "description": "Returns a list of all available widget types or a specific widget if type is provided",
-        "parameters": [
-          {
-            "name": "type",
-            "in": "query",
-            "description": "The type of widget to retrieve (dashboard, chart, table, timeline, comparison)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["dashboard", "chart", "table", "timeline", "comparison"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "widgets": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "widget": {
-                      "type": "object"
-                    },
-                    "data": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "operationId": "createWidget",
-        "summary": "Create a custom widget for display in chat",
-        "description": "Creates a custom widget with the specified type and data. Returns formatted markdown for immediate display in the chat conversation. No external URLs needed - everything displays inline.",
+        "summary": "Create a widget visualization",
+        "description": "Creates a widget with the specified type and data. Returns formatted markdown or content in the 'markdown' or 'content' field for immediate display. Supports: dashboard (metrics), chart (bar/line/pie/doughnut), table (data rows), timeline (events), comparison (pricing/features).",
         "requestBody": {
           "required": true,
           "content": {
@@ -186,26 +140,57 @@
                 }
               },
               "examples": {
-                "chart": {
+                "chartBar": {
+                  "summary": "Bar Chart Example",
                   "value": {
                     "type": "chart",
-                    "title": "Monthly Sales",
+                    "title": "Ventas Mensuales 2025",
                     "chartType": "bar",
-                    "data": [15000, 22000, 18000, 28000],
-                    "labels": ["Jan", "Feb", "Mar", "Apr"]
+                    "labels": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
+                    "data": [12000, 15000, 18000, 22000, 25000, 27000]
+                  }
+                },
+                "chartLine": {
+                  "summary": "Line Chart Example",
+                  "value": {
+                    "type": "chart",
+                    "title": "User Growth",
+                    "chartType": "line",
+                    "labels": ["Jan", "Feb", "Mar", "Apr"],
+                    "data": [1000, 1500, 2200, 3100]
                   }
                 },
                 "dashboard": {
+                  "summary": "Dashboard Example",
                   "value": {
                     "type": "dashboard",
-                    "title": "Sales Dashboard",
+                    "title": "Sales Dashboard Q1",
                     "metrics": [
                       {
                         "value": "$125,430",
                         "label": "Total Revenue",
-                        "color": "text-green-600",
+                        "color": "green",
                         "change": "+18%"
+                      },
+                      {
+                        "value": "1,234",
+                        "label": "New Customers",
+                        "color": "blue",
+                        "change": "+25%"
                       }
+                    ]
+                  }
+                },
+                "table": {
+                  "summary": "Table Example",
+                  "value": {
+                    "type": "table",
+                    "title": "Top Products",
+                    "headers": ["Product", "Sales", "Stock"],
+                    "rows": [
+                      ["iPhone 15", "$89,450", "125"],
+                      ["MacBook Air", "$145,320", "45"],
+                      ["AirPods Pro", "$34,890", "234"]
                     ]
                   }
                 }
@@ -230,7 +215,15 @@
                     },
                     "markdown": {
                       "type": "string",
-                      "description": "Formatted markdown representation of the widget for display in chat"
+                      "description": "Formatted markdown/content for display (may also be in 'content' field)"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Formatted content for display (alternative to 'markdown' field)"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Content type (usually 'markdown')"
                     },
                     "message": {
                       "type": "string",
