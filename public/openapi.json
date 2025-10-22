@@ -2,12 +2,13 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ChatGPT Dynamic Widgets API",
-    "description": "API for creating and displaying dynamic widgets in ChatGPT conversations",
-    "version": "1.0.0"
+    "description": "API for creating and displaying dynamic widgets directly in ChatGPT conversations. All widgets are returned as formatted markdown for immediate display in the chat.",
+    "version": "2.0.0"
   },
   "servers": [
     {
-      "url": "https://frontend-production-d329.up.railway.app"
+      "url": "https://frontend-production-d329.up.railway.app",
+      "description": "Production server on Railway"
     }
   ],
   "paths": {
@@ -60,8 +61,8 @@
       },
       "post": {
         "operationId": "createWidget",
-        "summary": "Create a custom widget",
-        "description": "Creates a custom widget with the specified type and data. Returns a URL to view the widget.",
+        "summary": "Create a custom widget for display in chat",
+        "description": "Creates a custom widget with the specified type and data. Returns formatted markdown for immediate display in the chat conversation. No external URLs needed - everything displays inline.",
         "requestBody": {
           "required": true,
           "content": {
@@ -214,7 +215,7 @@
         },
         "responses": {
           "200": {
-            "description": "Widget created successfully",
+            "description": "Widget created successfully with markdown formatted output for display in chat",
             "content": {
               "application/json": {
                 "schema": {
@@ -224,11 +225,16 @@
                       "type": "boolean"
                     },
                     "widget": {
-                      "type": "object"
+                      "type": "object",
+                      "description": "The widget data structure"
                     },
-                    "url": {
+                    "markdown": {
                       "type": "string",
-                      "description": "URL to view the widget"
+                      "description": "Formatted markdown representation of the widget for display in chat"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Success message"
                     }
                   }
                 }

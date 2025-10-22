@@ -198,19 +198,9 @@ Tipos disponibles: `dashboard`, `chart`, `table`, `timeline`, `comparison`
 
 ## 🚀 Deploy
 
-### Vercel (Recomendado)
+### Railway (Configurado)
 
-1. Conecta tu repositorio a Vercel
-2. Vercel detectará automáticamente Next.js
-3. Deploy! 🚀
-
-```bash
-# O usando CLI
-npm i -g vercel
-vercel
-```
-
-### Railway
+Ya está deployado en Railway con configuración automática:
 
 ```bash
 # Agregar Railway config
