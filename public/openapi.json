@@ -2,21 +2,21 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ChatGPT Dynamic Widgets API",
-    "description": "API for creating dynamic widgets that display as formatted markdown in ChatGPT. Simply POST to /api/widgets with your widget type and data, and receive formatted content ready to display.",
-    "version": "3.0.0"
+    "description": "API for creating dynamic visual widgets (charts, dashboards, tables) that display as interactive HTML visualizations in ChatGPT. POST to /api/widgets with your widget type and data to receive a visual widget URL that ChatGPT will render inline.",
+    "version": "4.0.0"
   },
   "servers": [
     {
       "url": "https://frontend-production-d329.up.railway.app",
-      "description": "Production Frontend (proxies to backend automatically)"
+      "description": "Production Frontend with visual widget rendering"
     }
   ],
   "paths": {
     "/api/widgets": {
       "post": {
         "operationId": "createWidget",
-        "summary": "Create a widget visualization",
-        "description": "Creates a widget with the specified type and data. Returns formatted markdown or content in the 'markdown' or 'content' field for immediate display. Supports: dashboard (metrics), chart (bar/line/pie/doughnut), table (data rows), timeline (events), comparison (pricing/features).",
+        "summary": "Create a visual widget",
+        "description": "Creates an interactive visual widget (chart, dashboard, table, etc.) and returns a URL to the rendered HTML visualization. ChatGPT will display this as an inline iframe with the actual rendered chart/widget, not as text. Supports: dashboard (KPI metrics), chart (bar/line/pie/doughnut charts with Recharts), table (data rows), timeline (events), comparison (pricing/features).",
         "requestBody": {
           "required": true,
           "content": {
@@ -200,42 +200,52 @@
         },
         "responses": {
           "200": {
-            "description": "Widget created successfully with markdown formatted output for display in chat",
+            "description": "Widget created successfully. Returns both a visual URL for iframe rendering AND markdown text as fallback.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "success": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "description": "Indicates if widget creation succeeded"
+                    },
+                    "widgetUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to the visual HTML widget (e.g., /widgets/chart?id=abc). ChatGPT should display this as an iframe with the actual rendered chart/visualization."
                     },
                     "widget": {
                       "type": "object",
-                      "description": "The widget data structure"
+                      "description": "The widget data structure sent to create the widget"
                     },
                     "markdown": {
                       "type": "string",
-                      "description": "Formatted markdown/content for display (may also be in 'content' field)"
+                      "description": "Fallback: Formatted markdown text version of the widget for text-only displays"
                     },
                     "content": {
                       "type": "string",
-                      "description": "Formatted content for display (alternative to 'markdown' field)"
+                      "description": "Fallback: Alternative text content (same as markdown)"
                     },
                     "type": {
                       "type": "string",
-                      "description": "Content type (usually 'markdown')"
+                      "description": "Content type: 'visual-widget' for graphical rendering, 'markdown' for text fallback"
                     },
                     "message": {
                       "type": "string",
-                      "description": "Success message"
+                      "description": "Success message with instructions"
                     }
-                  }
+                  },
+                  "required": ["success", "widgetUrl"]
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request - missing required fields or invalid widget type"
+          },
+          "500": {
+            "description": "Server error - backend unavailable or failed to generate widget"
           }
         }
       }

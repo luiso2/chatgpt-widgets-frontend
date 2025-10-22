@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
+import { baseURL } from "@/baseUrl";
+import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
 // Backend API URL
 const BACKEND_API_URL = "https://gpt-widget-production.up.railway.app";
+
+// In-memory widget storage (in production, use Redis or database)
+const widgetStore = new Map<string, any>();
 
 // Widget type mapping to backend endpoints
 const WIDGET_ENDPOINTS: Record<string, string> = {
@@ -16,13 +21,28 @@ const WIDGET_ENDPOINTS: Record<string, string> = {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
+  const id = searchParams.get("id");
+
+  // If ID provided, return widget data
+  if (id) {
+    const widgetData = widgetStore.get(id);
+    if (!widgetData) {
+      return NextResponse.json(
+        { success: false, error: "Widget not found" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({
+      success: true,
+      widget: widgetData,
+    });
+  }
 
   // Return available widget types
   return NextResponse.json({
     success: true,
     widgets: Object.keys(WIDGET_ENDPOINTS),
-    message: "Usa POST /api/widgets con los datos del widget para crear visualizaciones",
+    message: "Use POST /api/widgets to create visual widgets. Returns widgetUrl for iframe rendering.",
     backend: BACKEND_API_URL,
   });
 }
@@ -72,13 +92,26 @@ export async function POST(request: Request) {
 
     const backendData = await backendResponse.json();
 
-    // Return the backend response with markdown content
+    // Generate unique widget ID
+    const widgetId = crypto.randomBytes(16).toString("hex");
+
+    // Store widget data for visual rendering
+    const widgetWithType = { type, chartType, ...widgetData };
+    widgetStore.set(widgetId, widgetWithType);
+
+    // Generate widget URL based on type
+    const widgetPath = `/widgets/${type}?id=${widgetId}`;
+    const widgetUrl = `${baseURL}${widgetPath}`;
+
+    // Return both visual URL and markdown fallback
     return NextResponse.json({
       success: true,
+      widgetUrl: widgetUrl,
       markdown: backendData.content,
-      type: backendData.type,
-      widget: widgetData,
-      message: "Widget generado exitosamente por el backend. Los datos se muestran en formato visual arriba.",
+      content: backendData.content,
+      type: "visual-widget",
+      widget: widgetWithType,
+      message: "Visual widget created! ChatGPT will display this as an interactive chart/visualization.",
     });
   } catch (error) {
     console.error("Error calling backend:", error);

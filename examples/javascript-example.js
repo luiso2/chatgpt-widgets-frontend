@@ -50,11 +50,20 @@ async function main() {
   console.log(JSON.stringify(result, null, 2));
   console.log("\n" + "=".repeat(50) + "\n");
 
-  // Extraer el contenido formateado (markdown o content)
+  // Extraer la URL visual del widget
+  if (result.widgetUrl) {
+    console.log("🎨 URL del Widget Visual:\n");
+    console.log(result.widgetUrl);
+    console.log("\nEsta URL muestra el gráfico como HTML interactivo (Recharts)");
+    console.log("ChatGPT renderizará esto como un iframe visual, no como texto\n");
+    console.log("=".repeat(50) + "\n");
+  }
+
+  // Extraer el contenido formateado (markdown fallback)
   const content = result.markdown || result.content;
 
   if (content) {
-    console.log("📝 Contenido formateado (markdown/content):\n");
+    console.log("📝 Contenido formateado (markdown fallback):\n");
     console.log(content);
     console.log("\n" + "=".repeat(50) + "\n");
   } else {

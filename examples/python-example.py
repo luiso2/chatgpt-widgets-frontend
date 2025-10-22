@@ -62,11 +62,20 @@ def main():
     print(json.dumps(result, indent=2, ensure_ascii=False))
     print("\n" + "=" * 50 + "\n")
 
-    # Extraer el contenido formateado (markdown o content)
+    # Extraer la URL visual del widget
+    widget_url = result.get("widgetUrl")
+    if widget_url:
+        print("🎨 URL del Widget Visual:\n")
+        print(widget_url)
+        print("\nEsta URL muestra el gráfico como HTML interactivo (Recharts)")
+        print("ChatGPT renderizará esto como un iframe visual, no como texto\n")
+        print("=" * 50 + "\n")
+
+    # Extraer el contenido formateado (markdown fallback)
     content = result.get("markdown") or result.get("content")
 
     if content:
-        print("📝 Contenido formateado (markdown/content):\n")
+        print("📝 Contenido formateado (markdown fallback):\n")
         print(content)
         print("\n" + "=" * 50 + "\n")
     else:
