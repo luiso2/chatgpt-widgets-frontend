@@ -60,37 +60,16 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!WIDGET_ENDPOINTS[type]) {
+    const validTypes = ["dashboard", "chart", "table", "timeline", "comparison"];
+    if (!validTypes.includes(type)) {
       return NextResponse.json(
         {
           success: false,
-          error: `Invalid widget type. Available types: ${Object.keys(WIDGET_ENDPOINTS).join(", ")}`
+          error: `Invalid widget type. Available types: ${validTypes.join(", ")}`
         },
         { status: 400 }
       );
     }
-
-    // Call backend API
-    const backendUrl = `${BACKEND_API_URL}${WIDGET_ENDPOINTS[type]}`;
-
-    // For chart widgets, map chartType to type for backend
-    const backendPayload = type === "chart" && chartType
-      ? { ...widgetData, type: chartType }
-      : widgetData;
-
-    const backendResponse = await fetch(backendUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendPayload),
-    });
-
-    if (!backendResponse.ok) {
-      throw new Error(`Backend returned ${backendResponse.status}`);
-    }
-
-    const backendData = await backendResponse.json();
 
     // Generate unique widget ID
     const widgetId = crypto.randomBytes(16).toString("hex");
@@ -103,22 +82,17 @@ export async function POST(request: Request) {
     const widgetPath = `/widgets/${type}?id=${widgetId}`;
     const widgetUrl = `${baseURL}${widgetPath}`;
 
-    // Return both visual URL and markdown fallback
+    // Return ONLY the widget URL - simple response for ChatGPT
     return NextResponse.json({
-      success: true,
       widgetUrl: widgetUrl,
-      markdown: backendData.content,
-      content: backendData.content,
-      type: "visual-widget",
-      widget: widgetWithType,
-      message: "Visual widget created! ChatGPT will display this as an interactive chart/visualization.",
+      title: widgetData.title || "Widget created",
+      description: `Click the link above to view your interactive ${type} widget`
     });
   } catch (error) {
-    console.error("Error calling backend:", error);
+    console.error("Error creating widget:", error);
     return NextResponse.json(
       {
-        success: false,
-        error: "Error al conectar con el backend. Verifica que el backend esté disponible.",
+        error: "Failed to create widget",
         details: error instanceof Error ? error.message : "Unknown error"
       },
       { status: 500 }

@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ChatGPT Dynamic Widgets API",
-    "description": "API for creating dynamic visual widgets (charts, dashboards, tables) that display as interactive HTML visualizations in ChatGPT. POST to /api/widgets with your widget type and data to receive a visual widget URL that ChatGPT will render inline.",
-    "version": "4.0.0"
+    "description": "Creates interactive visual widgets and returns a clickable URL. Always present the widgetUrl as a link for users to click and view the widget.",
+    "version": "4.2.0"
   },
   "servers": [
     {
@@ -16,7 +16,7 @@
       "post": {
         "operationId": "createWidget",
         "summary": "Create a visual widget",
-        "description": "Creates interactive visual widgets and returns a clickable URL. When user clicks the link, it redirects to the live widget page. Supports charts (bar/line/pie/doughnut), dashboards with KPIs, and data tables.",
+        "description": "Creates a widget and returns ONLY a widgetUrl. You MUST present the widgetUrl as a clickable link in your response. Do NOT show raw data. Tell the user to click the link to view their interactive widget.",
         "requestBody": {
           "required": true,
           "content": {
@@ -200,43 +200,27 @@
         },
         "responses": {
           "200": {
-            "description": "Widget created successfully. Returns both a visual URL for iframe rendering AND markdown text as fallback.",
+            "description": "Widget created successfully. Returns a clickable URL to view the interactive widget.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "description": "Indicates if widget creation succeeded"
-                    },
                     "widgetUrl": {
                       "type": "string",
                       "format": "uri",
-                      "description": "Clickable URL that redirects to the interactive widget page. Present this as a link that users can click to view the visualization."
+                      "description": "Direct link to the interactive widget. Present this URL prominently as a clickable link."
                     },
-                    "widget": {
-                      "type": "object",
-                      "description": "The widget data structure sent to create the widget"
-                    },
-                    "markdown": {
+                    "title": {
                       "type": "string",
-                      "description": "Fallback: Formatted markdown text version of the widget for text-only displays"
+                      "description": "Title of the created widget"
                     },
-                    "content": {
+                    "description": {
                       "type": "string",
-                      "description": "Fallback: Alternative text content (same as markdown)"
-                    },
-                    "type": {
-                      "type": "string",
-                      "description": "Content type: 'visual-widget' for graphical rendering, 'markdown' for text fallback"
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Success message with instructions"
+                      "description": "Brief description of the widget"
                     }
                   },
-                  "required": ["success", "widgetUrl"]
+                  "required": ["widgetUrl"]
                 }
               }
             }
