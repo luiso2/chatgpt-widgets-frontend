@@ -4,8 +4,8 @@ import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
 
-// Backend API URL
-const BACKEND_API_URL = "https://gpt-widget-production.up.railway.app";
+// Backend API URL - use environment variable
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL || "https://gpt-widget-production.up.railway.app";
 
 // In-memory widget storage (in production, use Redis or database)
 const widgetStore = new Map<string, any>();

@@ -2,7 +2,8 @@
 // JavaScript Example - Create Widget API Call
 // ============================================
 
-const API_URL = "https://frontend-production-d329.up.railway.app/api/widgets";
+// Replace with your deployed frontend URL
+const API_URL = "https://YOUR-FRONTEND-APP.up.railway.app/api/widgets";
 
 // Datos del widget
 const widgetData = {
@@ -80,8 +81,9 @@ main().catch(console.error);
 
 /*
 // Copiar y pegar en la consola del navegador:
+// (Reemplazar YOUR-FRONTEND-APP con tu dominio de Railway)
 
-fetch("https://frontend-production-d329.up.railway.app/api/widgets", {
+fetch("https://YOUR-FRONTEND-APP.up.railway.app/api/widgets", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({

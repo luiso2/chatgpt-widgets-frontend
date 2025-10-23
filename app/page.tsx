@@ -5,6 +5,10 @@ import Timeline from "@/components/widgets/Timeline";
 import Comparison from "@/components/widgets/Comparison";
 import Tree from "@/components/widgets/Tree";
 
+// Backend API URL - use environment variable
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL || "https://gpt-widget-production.up.railway.app";
+const BACKEND_API_DOMAIN = BACKEND_API_URL.replace("https://", "").replace("http://", "");
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -345,12 +349,12 @@ export default function Home() {
           <p className="mt-2 text-sm">
             API Backend:{" "}
             <a
-              href="https://gpt-widget-production.up.railway.app"
+              href={BACKEND_API_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              gpt-widget-production.up.railway.app
+              {BACKEND_API_DOMAIN}
             </a>
           </p>
         </div>

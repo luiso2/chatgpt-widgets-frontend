@@ -6,7 +6,8 @@ import { z } from "zod";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const BACKEND_API_URL = "https://gpt-widget-production.up.railway.app";
+// Backend API URL - use environment variable
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL || "https://gpt-widget-production.up.railway.app";
 
 // Helper to fetch HTML content
 const getWidgetHtml = async (path: string) => {
