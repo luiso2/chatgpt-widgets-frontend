@@ -19,6 +19,7 @@
     "mcp-handler": "^1.0.3",
     "next": "16.0.0",
     "react": "19.2.0",
+    "react-complex-tree": "^2.6.1",
     "react-dom": "19.2.0",
     "recharts": "^3.3.0",
     "zod": "^3.25.76"

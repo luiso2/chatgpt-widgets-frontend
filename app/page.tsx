@@ -3,6 +3,7 @@ import Chart from "@/components/widgets/Chart";
 import Table from "@/components/widgets/Table";
 import Timeline from "@/components/widgets/Timeline";
 import Comparison from "@/components/widgets/Comparison";
+import Tree from "@/components/widgets/Tree";
 
 export default function Home() {
   return (
@@ -169,6 +170,149 @@ export default function Home() {
                   "On-premise option",
                 ],
                 highlight: false,
+              },
+            ]}
+          />
+        </section>
+
+        {/* Tree Widget - Premium */}
+        <section>
+          <Tree
+            title="Sistema de Archivos del Proyecto"
+            variant="premium"
+            showSearch={true}
+            multiSelect={true}
+            data={[
+              {
+                id: "1",
+                label: "src",
+                icon: "folder",
+                isExpanded: true,
+                children: [
+                  {
+                    id: "1-1",
+                    label: "components",
+                    icon: "folder",
+                    isExpanded: true,
+                    badge: "15",
+                    children: [
+                      { id: "1-1-1", label: "Dashboard.tsx", icon: "code" },
+                      { id: "1-1-2", label: "Chart.tsx", icon: "code" },
+                      { id: "1-1-3", label: "Table.tsx", icon: "code" },
+                      { id: "1-1-4", label: "Tree.tsx", icon: "code", badge: "New" },
+                    ],
+                  },
+                  {
+                    id: "1-2",
+                    label: "hooks",
+                    icon: "folder",
+                    badge: "25",
+                    children: [
+                      { id: "1-2-1", label: "use-tree-data.ts", icon: "code" },
+                      { id: "1-2-2", label: "use-tree-selection.ts", icon: "code" },
+                      { id: "1-2-3", label: "use-data-pagination.ts", icon: "code" },
+                      { id: "1-2-4", label: "use-debounce.ts", icon: "code" },
+                      { id: "1-2-5", label: "use-clipboard.ts", icon: "code" },
+                    ],
+                  },
+                  {
+                    id: "1-3",
+                    label: "api",
+                    icon: "folder",
+                    children: [
+                      { id: "1-3-1", label: "widgets", icon: "folder" },
+                      { id: "1-3-2", label: "mcp", icon: "folder" },
+                    ],
+                  },
+                ],
+              },
+              {
+                id: "2",
+                label: "public",
+                icon: "folder",
+                children: [
+                  { id: "2-1", label: "logo.png", icon: "image" },
+                  { id: "2-2", label: "favicon.ico", icon: "image" },
+                ],
+              },
+              {
+                id: "3",
+                label: "docs",
+                icon: "folder",
+                children: [
+                  { id: "3-1", label: "README.md", icon: "document" },
+                  { id: "3-2", label: "API.md", icon: "document" },
+                  { id: "3-3", label: "HOOKS.md", icon: "document", badge: "New" },
+                ],
+              },
+              {
+                id: "4",
+                label: "package.json",
+                icon: "package",
+              },
+              {
+                id: "5",
+                label: "tsconfig.json",
+                icon: "settings",
+              },
+            ]}
+          />
+        </section>
+
+        {/* Tree Widget - Neon Variant */}
+        <section>
+          <Tree
+            title="Estructura de Base de Datos"
+            variant="neon"
+            showSearch={true}
+            data={[
+              {
+                id: "db1",
+                label: "PostgreSQL Database",
+                icon: "database",
+                isExpanded: true,
+                badge: "Active",
+                children: [
+                  {
+                    id: "db1-1",
+                    label: "Tables",
+                    icon: "folder",
+                    isExpanded: true,
+                    badge: "8",
+                    children: [
+                      { id: "db1-1-1", label: "users", icon: "users", badge: "125K" },
+                      { id: "db1-1-2", label: "products", icon: "package", badge: "5.2K" },
+                      { id: "db1-1-3", label: "orders", icon: "file", badge: "89K" },
+                      { id: "db1-1-4", label: "widgets", icon: "code", badge: "245" },
+                    ],
+                  },
+                  {
+                    id: "db1-2",
+                    label: "Views",
+                    icon: "folder",
+                    badge: "3",
+                    children: [
+                      { id: "db1-2-1", label: "user_analytics", icon: "file" },
+                      { id: "db1-2-2", label: "sales_summary", icon: "file" },
+                    ],
+                  },
+                  {
+                    id: "db1-3",
+                    label: "Indexes",
+                    icon: "folder",
+                    badge: "12",
+                  },
+                ],
+              },
+              {
+                id: "db2",
+                label: "Redis Cache",
+                icon: "database",
+                badge: "Hot",
+                children: [
+                  { id: "db2-1", label: "session_cache", icon: "file" },
+                  { id: "db2-2", label: "api_cache", icon: "file" },
+                ],
               },
             ]}
           />

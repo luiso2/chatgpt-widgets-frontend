@@ -17,6 +17,15 @@ const WIDGET_ENDPOINTS: Record<string, string> = {
   table: "/api/widget/table",
   timeline: "/api/widget/timeline",
   comparison: "/api/widget/comparison",
+  tree: "/api/widget/tree",
+  stats: "/api/widget/stats",
+  progress: "/api/widget/progress",
+  kanban: "/api/widget/kanban",
+  calendar: "/api/widget/calendar",
+  pricing: "/api/widget/pricing",
+  gallery: "/api/widget/gallery",
+  notifications: "/api/widget/notifications",
+  activity: "/api/widget/activity",
 };
 
 export async function GET(request: Request) {
@@ -60,7 +69,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const validTypes = ["dashboard", "chart", "table", "timeline", "comparison"];
+    const validTypes = [
+      "dashboard", "chart", "table", "timeline", "comparison", "tree",
+      "stats", "progress", "kanban", "calendar", "pricing", "gallery",
+      "notifications", "activity"
+    ];
     if (!validTypes.includes(type)) {
       return NextResponse.json(
         {
