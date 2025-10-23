@@ -25,6 +25,17 @@ const WIDGET_ENDPOINTS: Record<string, string> = {
   activity: "/api/widget/activity",
 };
 
+/**
+ * 🚨 CRITICAL API ENDPOINT - NO MODIFICAR SIN LEER CRITICAL_CONFIG.md 🚨
+ *
+ * Este endpoint es el proxy entre frontend y backend para cargar datos de widgets.
+ *
+ * REGLAS CRÍTICAS:
+ * 1. SIEMPRE intentar múltiples rutas del backend por compatibilidad
+ * 2. SIEMPRE retornar estructura consistente { success, widget, source }
+ * 3. NO cambiar las URLs del backend sin actualizar ambos lados
+ * 4. NO cambiar la estructura de respuesta - romperá el hook useWidgetData
+ */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
@@ -34,7 +45,8 @@ export async function GET(request: Request) {
     try {
       console.log(`🔍 Fetching widget data for ID: ${id} from backend`);
 
-      // Try to fetch from backend API
+      // ⚠️ WARNING: Estas URLs deben coincidir con los endpoints del backend
+      // Ver backend /src/app.js para los endpoints correspondientes
       const backendUrl = `${BACKEND_API_URL}/api/widget/data/${id}`;
       console.log(`📡 Backend URL: ${backendUrl}`);
 

@@ -20,5 +20,17 @@ export function useIsChatGptApp(): boolean {
   return false;
 }
 
-// Export the simplified widget data hook (uses fallback immediately)
+/**
+ * 🚨 CRITICAL EXPORT - NO MODIFICAR 🚨
+ *
+ * SIEMPRE exportar el hook SIMPLIFICADO que garantiza fallback data
+ * NUNCA cambiar a 'use-widget-data' (sin -simple) - romperá los widgets
+ *
+ * El hook simplificado garantiza:
+ * - Renderizado inmediato con fallback
+ * - Sin pantallas de carga bloqueantes
+ * - Nunca muestra "Sin datos disponibles"
+ *
+ * Ver CRITICAL_CONFIG.md antes de cualquier cambio
+ */
 export { useWidgetData } from './use-widget-data-simple';
