@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
 /**
  * Hook to run callback on every animation frame for smooth animations.
@@ -23,8 +23,8 @@ export function useAnimationFrame(
   callback: (deltaTime: number) => void,
   enabled: boolean = true
 ) {
-  const requestRef = useRef<number>();
-  const previousTimeRef = useRef<number>();
+  const requestRef = useRef<number | undefined>(undefined);
+  const previousTimeRef = useRef<number | undefined>(undefined);
   const callbackRef = useRef(callback);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export function useCountAnimation(
   target: number,
   duration: number = 1000
 ): number {
-  const [current, setCurrent] = React.useState(0);
+  const [current, setCurrent] = useState(0);
   const startTimeRef = useRef<number | null>(null);
   const startValueRef = useRef(0);
 

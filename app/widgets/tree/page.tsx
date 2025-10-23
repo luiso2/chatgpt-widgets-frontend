@@ -5,7 +5,7 @@ import { useState, useEffect, Suspense } from "react";
 import Tree from "@/components/widgets/Tree";
 import { useWidgetProps, type TreeNode } from "@/app/hooks";
 
-interface TreeWidgetData {
+interface TreeWidgetData extends Record<string, unknown> {
   title?: string;
   data: TreeNode[];
   expandAll?: boolean;
