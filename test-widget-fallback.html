@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Widget Fallback API</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .test-case {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+        .test-case:hover {
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+        .test-case h3 {
+            margin: 0 0 10px 0;
+            color: #1f2937;
+            font-size: 1.1rem;
+        }
+        .test-button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #4f46e5;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .status.loading {
+            background: #fef3c7;
+            color: #78350f;
+            border: 1px solid #f59e0b;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .openai-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #fef3c7;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #f59e0b;
+        }
+        .openai-toggle input {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test de Fallback API para Widgets</h1>
+
+        <!-- Simulación de window.openai -->
+        <div class="test-section">
+            <h2>⚙️ Configuración de Prueba</h2>
+            <div class="openai-toggle">
+                <input type="checkbox" id="simulateOpenAI" onchange="toggleOpenAI()">
+                <label for="simulateOpenAI">
+                    <strong>Simular window.openai</strong> (marca para probar modo ChatGPT embebido)
+                </label>
+            </div>
+            <div id="openaiStatus" class="status"></div>
+        </div>
+
+        <!-- Tests de widgets -->
+        <div class="test-section">
+            <h2>🎯 Pruebas de Widgets</h2>
+            <div class="test-grid">
+                <div class="test-case">
+                    <h3>📊 Chart Widget</h3>
+                    <button class="test-button" onclick="testWidget('chart')">
+                        Probar Chart
+                    </button>
+                    <div id="status-chart" class="status"></div>
+                </div>
+
+                <div class="test-case">
+                    <h3>📈 Dashboard Widget</h3>
+                    <button class="test-button" onclick="testWidget('dashboard')">
+                        Probar Dashboard
+                    </button>
+                    <div id="status-dashboard" class="status"></div>
+                </div>
+
+                <div class="test-case">
+                    <h3>📋 Table Widget</h3>
+                    <button class="test-button" onclick="testWidget('table')">
+                        Probar Table
+                    </button>
+                    <div id="status-table" class="status"></div>
+                </div>
+
+                <div class="test-case">
+                    <h3>🕐 Timeline Widget</h3>
+                    <button class="test-button" onclick="testWidget('timeline')">
+                        Probar Timeline
+                    </button>
+                    <div id="status-timeline" class="status"></div>
+                </div>
+
+                <div class="test-case">
+                    <h3>⚖️ Comparison Widget</h3>
+                    <button class="test-button" onclick="testWidget('comparison')">
+                        Probar Comparison
+                    </button>
+                    <div id="status-comparison" class="status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista previa del widget -->
+        <div class="test-section">
+            <h2>👁️ Vista Previa del Widget</h2>
+            <div id="iframeContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000'; // Cambiar según tu configuración
+        let mockWidgetData = {};
+
+        // Función para simular window.openai
+        function toggleOpenAI() {
+            const checkbox = document.getElementById('simulateOpenAI');
+            const status = document.getElementById('openaiStatus');
+
+            if (checkbox.checked) {
+                // Simular window.openai
+                window.openai = {
+                    getData: async (id) => {
+                        console.log('🔍 window.openai.getData llamado con ID:', id);
+
+                        // Simular delay de red
+                        await new Promise(resolve => setTimeout(resolve, 500));
+
+                        // Retornar datos mock basados en el ID
+                        return mockWidgetData[id] || {
+                            title: `Datos de OpenAI (${id})`,
+                            data: [100, 200, 300, 400, 500],
+                            labels: ["A", "B", "C", "D", "E"]
+                        };
+                    }
+                };
+                status.className = 'status success';
+                status.innerHTML = '✅ window.openai simulado - Modo ChatGPT activo';
+            } else {
+                delete window.openai;
+                status.className = 'status error';
+                status.innerHTML = '❌ window.openai removido - Usando fallback API';
+            }
+        }
+
+        // Función para probar un widget
+        async function testWidget(type) {
+            const statusEl = document.getElementById(`status-${type}`);
+            const iframeContainer = document.getElementById('iframeContainer');
+
+            statusEl.className = 'status loading';
+            statusEl.innerHTML = '⏳ Creando widget...';
+
+            try {
+                // Datos de prueba para cada tipo de widget
+                const testData = {
+                    chart: {
+                        type: 'chart',
+                        title: 'Ventas Q4 2025 - Prueba API',
+                        chartType: 'bar',
+                        data: [45000, 52000, 48000, 61000, 58000, 72000],
+                        labels: ['Julio', 'Agosto', 'Sept', 'Oct', 'Nov', 'Dic']
+                    },
+                    dashboard: {
+                        type: 'dashboard',
+                        title: 'Dashboard de Prueba - API Fallback',
+                        metrics: [
+                            { value: '$92,450', label: 'Ingresos', color: 'text-green-600', change: '+15%' },
+                            { value: '3,245', label: 'Usuarios', color: 'text-blue-600', change: '+8%' },
+                            { value: '156', label: 'Órdenes', color: 'text-purple-600', change: '+23%' },
+                            { value: '98.5%', label: 'Uptime', color: 'text-orange-600', change: '+0.5%' }
+                        ]
+                    },
+                    table: {
+                        type: 'table',
+                        title: 'Tabla de Prueba - Datos API',
+                        headers: ['ID', 'Nombre', 'Estado', 'Fecha', 'Valor'],
+                        rows: [
+                            ['#001', 'Proyecto Alpha', 'Activo', '2025-01-15', '$12,500'],
+                            ['#002', 'Proyecto Beta', 'Pendiente', '2025-01-20', '$8,900'],
+                            ['#003', 'Proyecto Gamma', 'Completado', '2025-01-10', '$15,200'],
+                            ['#004', 'Proyecto Delta', 'Activo', '2025-01-22', '$9,800']
+                        ]
+                    },
+                    timeline: {
+                        type: 'timeline',
+                        title: 'Timeline de Prueba - API Data',
+                        events: [
+                            { date: '2025-01-01', title: 'Inicio', description: 'Inicio del proyecto de prueba', color: 'blue' },
+                            { date: '2025-02-15', title: 'Milestone 1', description: 'Primera fase completada', color: 'green' },
+                            { date: '2025-04-01', title: 'Beta Release', description: 'Versión beta disponible', color: 'purple' },
+                            { date: '2025-06-01', title: 'Lanzamiento', description: 'Lanzamiento oficial', color: 'orange' }
+                        ]
+                    },
+                    comparison: {
+                        type: 'comparison',
+                        title: 'Comparación de Prueba - API',
+                        items: [
+                            {
+                                name: 'Opción Básica',
+                                price: '$29/mes',
+                                features: ['Feature 1', 'Feature 2', 'Soporte básico'],
+                                highlight: false
+                            },
+                            {
+                                name: 'Opción Premium',
+                                price: '$79/mes',
+                                features: ['Todo lo básico', 'Features avanzadas', 'Soporte 24/7', 'API Access'],
+                                highlight: true
+                            },
+                            {
+                                name: 'Opción Enterprise',
+                                price: 'Contactar',
+                                features: ['Todo lo premium', 'Personalización', 'SLA', 'Dedicado'],
+                                highlight: false
+                            }
+                        ]
+                    }
+                };
+
+                // Hacer POST a la API
+                const response = await fetch(`${API_URL}/api/widgets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData[type])
+                });
+
+                const result = await response.json();
+
+                if (result.widgetUrl) {
+                    // Extraer el ID del widget de la URL
+                    const urlParams = new URLSearchParams(new URL(result.widgetUrl).search);
+                    const widgetId = urlParams.get('id');
+
+                    // Guardar datos mock para window.openai simulado
+                    if (widgetId) {
+                        mockWidgetData[widgetId] = testData[type];
+                    }
+
+                    statusEl.className = 'status success';
+                    statusEl.innerHTML = `✅ Widget creado<br>ID: ${widgetId}<br>Fuente: ${window.openai ? 'OpenAI' : 'API'}`;
+
+                    // Mostrar el widget en iframe
+                    iframeContainer.innerHTML = `
+                        <iframe src="${result.widgetUrl}" frameborder="0"></iframe>
+                        <p style="margin-top: 10px; font-size: 12px; color: #6b7280;">
+                            URL: <a href="${result.widgetUrl}" target="_blank" style="color: #6366f1;">${result.widgetUrl}</a>
+                        </p>
+                    `;
+                } else {
+                    throw new Error('No se recibió URL del widget');
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = `❌ Error: ${error.message}`;
+                console.error('Error:', error);
+            }
+        }
+
+        // Inicializar estado
+        toggleOpenAI();
+    </script>
+</body>
+</html>
