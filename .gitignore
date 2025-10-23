@@ -43,3 +43,28 @@ next-env.d.ts
 # Build logs
 build*.log
 *.log
+
+# Unused MCP and widget files
+app/mcp/
+app/widget/
+app/widgets/tree/
+middleware.ts
+
+# Unused complex hooks (keep only index.ts)
+app/hooks/types.ts
+app/hooks/use-*.ts
+
+# Unused widget components
+components/widgets/ActivityFeed.tsx
+components/widgets/CalendarEvents.tsx
+components/widgets/Gallery.tsx
+components/widgets/Kanban.tsx
+components/widgets/Notifications.tsx
+components/widgets/PricingCards.tsx
+components/widgets/Progress.tsx
+components/widgets/StatsCards.tsx
+components/widgets/Tree.tsx
+
+# Duplicate files
+app/api/widgets/route*.ts
+app/widgets/table/page*.tsx
