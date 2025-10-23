@@ -57,8 +57,9 @@ export default function TimelineWidget() {
   };
 
   // Usar el hook unificado para cargar datos
+  // IMPORTANTE: Siempre usar fallbackData para garantizar que algo se muestre
   const { data, loading, error, hasOpenAI, dataSource } = useWidgetData<TimelineData>({
-    fallbackData: process.env.NODE_ENV === 'development' ? fallbackData : undefined
+    fallbackData: fallbackData // Siempre usar fallback data
   });
 
   // Estado de carga

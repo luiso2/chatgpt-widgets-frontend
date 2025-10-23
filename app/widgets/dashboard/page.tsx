@@ -51,9 +51,24 @@ export default function DashboardWidget() {
   };
 
   // Usar el hook unificado para cargar datos
+  // IMPORTANTE: Siempre usar fallbackData para garantizar que algo se muestre
   const { data, loading, error, hasOpenAI, dataSource } = useWidgetData<DashboardData>({
-    fallbackData: process.env.NODE_ENV === 'development' ? fallbackData : undefined
+    fallbackData: fallbackData // Siempre usar fallback data
   });
+
+  // Debug logging
+  if (typeof window !== 'undefined') {
+    console.log('🔍 Dashboard Widget Debug:', {
+      widgetId: new URLSearchParams(window.location.search).get('id'),
+      data: data,
+      loading: loading,
+      error: error,
+      dataSource: dataSource,
+      hasOpenAI: hasOpenAI,
+      metrics: data?.metrics,
+      title: data?.title
+    });
+  }
 
   // Estado de carga
   if (loading) {

@@ -48,6 +48,8 @@ export async function GET(request: Request) {
 
       if (!response.ok) {
         console.error(`❌ Backend response not OK: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`❌ Backend error body:`, errorText);
 
         // Fallback: Try alternative endpoint structure
         const altUrl = `${BACKEND_API_URL}/api/widgets/${id}`;

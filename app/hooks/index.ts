@@ -20,5 +20,5 @@ export function useIsChatGptApp(): boolean {
   return false;
 }
 
-// Export the new widget data hook
-export { useWidgetData } from './use-widget-data';
+// Export the simplified widget data hook (uses fallback immediately)
+export { useWidgetData } from './use-widget-data-simple';

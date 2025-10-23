@@ -64,8 +64,9 @@ export default function ComparisonWidget() {
   };
 
   // Usar el hook unificado para cargar datos
+  // IMPORTANTE: Siempre usar fallbackData para garantizar que algo se muestre
   const { data, loading, error, hasOpenAI, dataSource } = useWidgetData<ComparisonData>({
-    fallbackData: process.env.NODE_ENV === 'development' ? fallbackData : undefined
+    fallbackData: fallbackData // Siempre usar fallback data
   });
 
   // Estado de carga
