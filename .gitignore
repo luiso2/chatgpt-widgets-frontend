@@ -41,5 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # Build logs
-build.log
-build-webpack.log
+build*.log
+*.log
